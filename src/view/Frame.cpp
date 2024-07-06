@@ -23,4 +23,13 @@ namespace view {
         }
         children.clear();
     }
+
+    bool Frame::dispatchEvent(const event::Event &event) {
+        for (View *ch: children) {
+            if (ch->dispatchEvent(event)) {
+                return true;
+            }
+        }
+        return false;
+    }
 } // view

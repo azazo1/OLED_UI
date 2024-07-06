@@ -6,6 +6,8 @@
 
 #include <sche/SchedulableFromLambda.h>
 
+#include "event/Event.h"
+
 namespace view {
     Screen::Screen(SSD1306Wire *display): display(display) {
     }
@@ -38,6 +40,12 @@ namespace view {
         rootView = view;
     }
 
+    void Screen::dispatchEvent(const event::Event &event) const {
+        if (rootView != nullptr) {
+            rootView->dispatchEvent(event);
+        }
+    }
+
     void Screen::destroy() {
         if (scheduler != nullptr) {
             scheduler->setRemain(false);
@@ -50,5 +58,9 @@ namespace view {
 
     Screen::~Screen() {
         destroy();
+    }
+
+    bool Screen::isAlive() const {
+        return alive;
     }
 } // view

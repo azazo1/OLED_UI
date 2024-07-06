@@ -1,16 +1,15 @@
 #include <Arduino.h>
+#include <sche/SchedulableButtonEvent.h>
+#include "event/ButtonEvent.h"
 #include <propotion_mapping/LinearMapping.h>
-#include <sche/SequenceSchedulable.h>
 #include <view/LabeledFrame.h>
-#include <view/Rect.h>
 #include <view/Screen.h>
 #include <view/TextView.h>
+#include <event/KnobEvent.h>
 
-#include "sche/RectTransformation.h"
 #include "sche/Schedulable.h"
 #include "sche/SchedulableFromLambda.h"
 #include "sche/Scheduler.h"
-#include "sche/ButtonEvent.h"
 #include "SSD1306Wire.h"
 #include "Knob.h"
 
@@ -51,13 +50,26 @@ void setup() {
     display.flipScreenVertically();
     display.setFont(ArialMT_Plain_24);
 
-    scheduler.addSchedule(new sche::SchedulableFromLambda([](sche::mtime_t) {
+    scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.clear();
-        return true;
+        return screen.isAlive();
     }), PRIORITY_HIGH);
-    scheduler.addSchedule(new sche::SchedulableFromLambda([](sche::mtime_t) {
+    scheduler.addSchedule(new sche::SchedulableFromLambda(
+        [&screen, &kb](sche::mtime_t) {
+            const auto delta = kb.delta();
+            if (delta != 0) {
+                screen.dispatchEvent(event::KnobEvent(delta));
+            }
+            return screen.isAlive();
+        }
+    ));
+    scheduler.addSchedule(new sche::SchedulableButtonEvent(BUTTON_PIN, [&screen](const sche::mtime_t pt) {
+        screen.dispatchEvent(event::ButtonEvent(static_cast<int>(pt)));
+        return screen.isAlive();
+    }));
+    scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.display();
-        return true;
+        return screen.isAlive();
     }), PRIORITY_LOW);
 
     scheduler.mainloop();

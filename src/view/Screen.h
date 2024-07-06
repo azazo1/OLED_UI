@@ -8,6 +8,7 @@
 #include <sche/Scheduler.h>
 
 #include "View.h"
+#include "event/Event.h"
 
 // todo 实现多级菜单
 namespace view {
@@ -36,7 +37,15 @@ namespace view {
          */
         void setRootView(View *view);
 
+        /**
+         * 向 Root View 传递事件.
+         * @param event 要传递的事件.
+         */
+        void dispatchEvent(const event::Event &event) const;
+
         void destroy();
+
+        bool isAlive() const;
 
         ~Screen();
     };

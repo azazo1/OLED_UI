@@ -14,4 +14,10 @@ namespace view {
                           SSD1306Wire *display, sche::Scheduler *scheduler) {
         display->drawString(borderX, borderY, text);
     }
+
+    bool TextView::dispatchEvent(const event::Event &event) {
+        // TextView 不接收事件.
+        Serial.printf("%d %d", event.getType(), event.getPrimaryValue());
+        return false;
+    }
 } // view

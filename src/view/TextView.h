@@ -15,6 +15,8 @@ namespace view {
 
         void onDraw(int16_t borderX, int16_t borderY, int16_t borderW, int16_t borderH,
                     SSD1306Wire *display, sche::Scheduler *scheduler) override;
+
+        bool dispatchEvent(const event::Event &event) override;
     };
 } // view
 

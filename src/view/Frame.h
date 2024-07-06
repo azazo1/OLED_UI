@@ -26,6 +26,8 @@ namespace view {
                     SSD1306Wire *display, sche::Scheduler *scheduler) override;
 
         ~Frame() override;
+
+        bool dispatchEvent(const event::Event &event) override;
     };
 } // view
 
