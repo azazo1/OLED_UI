@@ -5,7 +5,7 @@
 #include "KnobEvent.h"
 
 namespace event {
-    KnobEvent::KnobEvent(const int delta): delta(delta) {
+    KnobEvent::KnobEvent(view::Screen &screen, const int delta): Event(screen), delta(delta) {
     }
 
     int KnobEvent::getType() const {

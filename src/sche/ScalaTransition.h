@@ -20,7 +20,19 @@ namespace sche {
         /// 回调函数, 接收变化值当前的值, 返回是否需要继续变化.
         const std::function<bool(int16_t)> reporter;
 
+        bool ended = false;
+
     public:
+        /**
+         * 创建一个数值过渡 Schedulable, 在回调中, end 保证能够回调, 且仅有一次.
+         *
+         * 结束此对象的生命周期有一下几种可能:
+         * 1. 超时, 即经过时间大于 durationMillis.
+         * 2. reporter 回调返回 false.
+         * 3. reporter(end) 被调用.
+         *
+         * @note mapping 参数不必是堆指针, 不会对其生命周期进行管理, 也可以为 null, 此时为线性映射.
+         */
         ScalaTransition(int16_t start, int16_t end, mtime_t durationMillis,
                         const propmap::PropotionMapping *mapping,
                         std::function<bool(int16_t)> reporter);

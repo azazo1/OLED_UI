@@ -17,7 +17,7 @@ namespace event {
         int delta;
 
     public:
-        explicit KnobEvent(int delta);
+        explicit KnobEvent(view::Screen &screen, int delta);
 
         int getType() const override;
 

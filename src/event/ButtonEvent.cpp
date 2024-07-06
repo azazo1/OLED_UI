@@ -5,7 +5,8 @@
 #include "ButtonEvent.h"
 
 namespace event {
-    ButtonEvent::ButtonEvent(const int pressedDuration): duration(pressedDuration) {
+    ButtonEvent::ButtonEvent(view::Screen &screen, const int pressedDuration): Event(screen),
+        duration(pressedDuration) {
     }
 
     int ButtonEvent::getType() const {
@@ -18,5 +19,9 @@ namespace event {
 
     int ButtonEvent::getPrimaryValue() const {
         return duration;
+    }
+
+    bool ButtonEvent::isLongClick() const {
+        return duration >= LONG_CLICK;
     }
 } // event

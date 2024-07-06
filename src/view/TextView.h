@@ -9,6 +9,8 @@
 namespace view {
     class TextView final : public View {
         String text;
+        int16_t displayLength = -1;
+        size_t aniBatch = 0;
 
     public:
         void setText(String text);

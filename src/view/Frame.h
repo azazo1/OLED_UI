@@ -18,7 +18,7 @@ namespace view {
 
         /**
          * 添加子视图.
-         * @param view 视图, 堆指针.
+         * @param view 视图, 堆指针, 传入所有权.
          */
         void addChild(View *view);
 
@@ -26,6 +26,8 @@ namespace view {
                     SSD1306Wire *display, sche::Scheduler *scheduler) override;
 
         ~Frame() override;
+
+        void destroy() override;
 
         bool dispatchEvent(const event::Event &event) override;
     };

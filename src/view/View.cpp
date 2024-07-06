@@ -8,6 +8,14 @@ namespace view {
     const uint8_t *View::font = ArialMT_Plain_10;
     int16_t View::lineHeight = ArialMT_Plain_10[1];
 
+    View::~View() {
+        alive = false;
+    }
+
+    void View::destroy() {
+        alive = false;
+    }
+
     void View::setFont(const uint8_t *newFont) {
         font = newFont;
         lineHeight = newFont[1];

@@ -4,8 +4,8 @@
 #include <propotion_mapping/LinearMapping.h>
 #include <view/LabeledFrame.h>
 #include <view/Screen.h>
-#include <view/TextView.h>
 #include <event/KnobEvent.h>
+#include <view/TextSelector.h>
 
 #include "sche/Schedulable.h"
 #include "sche/SchedulableFromLambda.h"
@@ -16,6 +16,8 @@
 #define KNOB_PIN_A GPIO_NUM_32
 #define KNOB_PIN_B GPIO_NUM_35
 #define BUTTON_PIN 23
+
+#define FONT_DATA ArialMT_Plain_16
 
 auto display = SSD1306Wire(0x3C, SDA, SCL);
 
@@ -30,25 +32,35 @@ void drawString(const int16_t secy) {
 
 void setup() {
     Serial.begin(9600);
+
     knob::Knob kb(KNOB_PIN_A, KNOB_PIN_B);
     sche::Scheduler scheduler;
     const propmap::LinearMapping linear_mapping;
     view::Screen screen(&display);
     screen.attachToScheduler(&scheduler);
-    const auto labeledFrame = new view::LabeledFrame();
-    const auto insideLabeledFrame = new view::LabeledFrame();
-    const auto textView = new view::TextView();
-    insideLabeledFrame->setTitle("Inside");
-    textView->setText("Ni Hao");
-    labeledFrame->setTitle("Hello World");
-    labeledFrame->addChild(insideLabeledFrame);
-    insideLabeledFrame->addChild(textView);
-    screen.setRootView(labeledFrame);
 
     display.init();
     display.setBrightness(50);
     display.flipScreenVertically();
-    display.setFont(ArialMT_Plain_24);
+    view::View::setFont(FONT_DATA);
+    display.setFont(FONT_DATA);
+
+    const auto labeledFrame = new view::LabeledFrame();
+    labeledFrame->setTitle("Hello World");
+
+    const auto textSelector = new view::TextSelector();
+    textSelector->addItem("Hello");
+    textSelector->addItem("Ni hao a");
+    textSelector->addItem("I like apple");
+    textSelector->addItem("Thks");
+    textSelector->addItem("Debug");
+    textSelector->setOnConfirmListener([](const String &text) {
+        Serial.println("Selected: " + text);
+    });
+
+    labeledFrame->addChild(textSelector);
+
+    screen.setRootView(labeledFrame);
 
     scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.clear();
@@ -58,15 +70,16 @@ void setup() {
         [&screen, &kb](sche::mtime_t) {
             const auto delta = kb.delta();
             if (delta != 0) {
-                screen.dispatchEvent(event::KnobEvent(delta));
+                screen.dispatchEvent(event::KnobEvent(screen, delta));
             }
             return screen.isAlive();
         }
     ));
-    scheduler.addSchedule(new sche::SchedulableButtonEvent(BUTTON_PIN, [&screen](const sche::mtime_t pt) {
-        screen.dispatchEvent(event::ButtonEvent(static_cast<int>(pt)));
-        return screen.isAlive();
-    }));
+    scheduler.addSchedule(new sche::SchedulableButtonEvent(
+        BUTTON_PIN, [&screen](const sche::mtime_t pt) {
+            screen.dispatchEvent(event::ButtonEvent(screen, static_cast<int>(pt)));
+            return screen.isAlive();
+        }));
     scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.display();
         return screen.isAlive();

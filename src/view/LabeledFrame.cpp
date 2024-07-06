@@ -12,7 +12,9 @@ namespace view {
     void LabeledFrame::onDraw(const int16_t borderX, const int16_t borderY, const int16_t borderW,
                               const int16_t borderH,
                               SSD1306Wire *display, sche::Scheduler *scheduler) {
-        display->setFont(font);
+        if (!alive) {
+            return;
+        }
         display->drawRect(borderX, borderY, borderW, borderH);
         display->drawString(static_cast<int16_t>(borderX + PADDING), borderY, title);
         display->drawHorizontalLine(borderX, static_cast<int16_t>(borderY + lineHeight), borderW);

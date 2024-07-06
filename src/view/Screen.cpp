@@ -63,4 +63,12 @@ namespace view {
     bool Screen::isAlive() const {
         return alive;
     }
+
+    sche::Scheduler &Screen::getScheduler() const {
+        return *scheduler;
+    }
+
+    SSD1306Wire &Screen::getDisplay() const {
+        return *display;
+    }
 } // view

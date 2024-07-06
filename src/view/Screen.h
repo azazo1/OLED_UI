@@ -43,6 +43,10 @@ namespace view {
          */
         void dispatchEvent(const event::Event &event) const;
 
+        sche::Scheduler &getScheduler() const;
+
+        SSD1306Wire &getDisplay() const;
+
         void destroy();
 
         bool isAlive() const;
