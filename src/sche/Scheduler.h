@@ -25,6 +25,9 @@ namespace sche {
         static void traverseAndFilter(ScheList &lst, mtime_t nowTime);
 
     public:
+        /**
+         * 创建一个安排者, 向安排者添加的可安排项会被反复`安排`直到其生命结束(可安排项返回 false).
+         */
         Scheduler();
 
         /**

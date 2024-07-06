@@ -13,7 +13,7 @@ namespace sche {
         Schedulable() = default;
 
         /**
-         * 起到回调函数的作用.
+         * 起到回调函数的作用, 此方法不应阻塞, 否则其他可安排项将得不到安排资源.
          * @param deltaTime 距离上一次开始调用此函数时所消耗的时间.
          * @return 此对象是否还要继续被安排.
          */

@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include <sche/SequenceSchedulable.h>
+
 #include "sche/RectTransformation.h"
 #include "sche/Schedulable.h"
 #include "sche/SchedulableFromLambda.h"
@@ -41,16 +43,36 @@ void setup() {
     // drawString(static_cast<int16_t>(kb.getAccumulated()));
     // return true;
     // }), PRIORITY_PLAIN);
-    scheduler.addSchedule(new sche::RectTransformation(
-        0, 100,
-        0, 30,
-        10, 30,
-        10, 40,
-        5000,
-        [](const int16_t x, const int16_t y, const int16_t w, const int16_t h) {
-            display.fillRect(x, y, w, h);
-        }
-    ));
+    scheduler.addSchedule(
+        (new sche::SequenceSchedulable())->then(
+            new sche::RectTransformation(
+                0, 0,
+                0, 0,
+                10, 10,
+                10, 10,
+                3000,
+                [](const int16_t x, const int16_t y, const int16_t w, const int16_t h) {
+                    display.fillRect(x, y, w, h);
+                }
+            )
+        )->then(
+            new sche::RectTransformation(
+                0, 100,
+                0, 30,
+                10, 30,
+                10, 3,
+                5000,
+                [](const int16_t x, const int16_t y, const int16_t w, const int16_t h) {
+                    display.fillRect(x, y, w, h);
+                }
+            )
+        )->then(
+            new sche::SchedulableFromLambda([](sche::mtime_t) {
+                display.fillRect(100, 30, 30, 3);
+                return true;
+            })
+        )
+    );
     scheduler.addSchedule(new sche::ButtonEvent(
         BUTTON_PIN,
         [&pressedTime](const sche::mtime_t pt) {
