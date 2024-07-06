@@ -13,6 +13,8 @@ namespace view {
 
         std::vector<String> items;
         std::vector<int16_t> relativeYs;
+        /// relativeYs 中的值的趋向(relativeYs[i] 在动画结束后就和 relativeYsTarget[i] 相等).
+        std::vector<int16_t> relativeYsTarget;
         size_t selected = 0;
 
         // 文字高亮矩形.
@@ -24,7 +26,7 @@ namespace view {
         std::function<void(const String &)> onChangeListener;
         std::function<void(const String &)> onConfirmListener;
 
-        bool animating = false;
+        size_t animBatch = 0;
 
         /**
          * 将所有文字项移动一定的距离.

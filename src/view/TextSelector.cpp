@@ -13,13 +13,16 @@
 
 namespace view {
     void TextSelector::addItem(String item) {
-        relativeYs.push_back(static_cast<int16_t>(lineHeight * items.size()));
+        const auto y = static_cast<int16_t>(lineHeight * items.size());
+        relativeYs.push_back(y);
+        relativeYsTarget.push_back(y);
         items.push_back(std::move(item));
     }
 
     void TextSelector::clearItems() {
         items.clear();
         relativeYs.clear();
+        relativeYsTarget.clear();
     }
 
 
@@ -78,6 +81,7 @@ namespace view {
             sche::Scheduler &scheduler = event.getScreen().getScheduler();
             SSD1306Wire &display = event.getScreen().getDisplay();
 
+            animBatch++;
             // 文字过渡动画.
             animMoveItems(static_cast<int16_t>(-selectionDelta * lineHeight), scheduler);
             // 矩形过渡动画.
@@ -95,15 +99,18 @@ namespace view {
     }
 
     void TextSelector::animMoveItems(const int16_t deltaY, sche::Scheduler &scheduler) {
+        auto curBatch = animBatch;
         for (size_t i = 0; i < items.size(); ++i) {
+            const auto newY = static_cast<int16_t>(relativeYsTarget.at(i) + deltaY);
+            relativeYsTarget.at(i) = newY;
             scheduler.addSchedule(new sche::ScalaTransition(
                 relativeYs.at(i),
-                static_cast<int16_t>(relativeYs.at(i) + deltaY),
+                newY,
                 ANIM_DURATION,
                 nullptr,
-                [this, i](const int16_t cur) {
+                [this, i, curBatch](const int16_t cur) {
                     relativeYs.at(i) = cur;
-                    return alive;
+                    return curBatch == animBatch;
                 }
             ));
         }
@@ -111,18 +118,19 @@ namespace view {
 
     void TextSelector::animMoveRect(const int16_t targetY, const int16_t targetWidth,
                                     sche::Scheduler &scheduler) {
+        auto curBatch = animBatch;
         scheduler.addSchedule(new sche::ScalaTransition(
             relRectY, targetY, ANIM_DURATION, nullptr,
-            [this](const int16_t cur) {
+            [this, curBatch](const int16_t cur) {
                 relRectY = cur;
-                return true;
+                return curBatch == animBatch;
             }
         ));
         scheduler.addSchedule(new sche::ScalaTransition(
             rectWidth, targetWidth, ANIM_DURATION, nullptr,
-            [this](const int16_t cur) {
+            [this, curBatch](const int16_t cur) {
                 rectWidth = cur;
-                return true;
+                return curBatch == animBatch;
             }
         ));
     }
