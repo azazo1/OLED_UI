@@ -1,7 +1,10 @@
 #include <Arduino.h>
 #include <propotion_mapping/LinearMapping.h>
 #include <sche/SequenceSchedulable.h>
+#include <view/LabeledFrame.h>
 #include <view/Rect.h>
+#include <view/Screen.h>
+#include <view/TextView.h>
 
 #include "sche/RectTransformation.h"
 #include "sche/Schedulable.h"
@@ -31,9 +34,17 @@ void setup() {
     knob::Knob kb(KNOB_PIN_A, KNOB_PIN_B);
     sche::Scheduler scheduler;
     const propmap::LinearMapping linear_mapping;
-    unsigned long pressedTime = 0;
-
-    view::Rect rect(0, 0, 10, 10, 1000, &linear_mapping, &display);
+    view::Screen screen(&display);
+    screen.attachToScheduler(&scheduler);
+    const auto labeledFrame = new view::LabeledFrame();
+    const auto insideLabeledFrame = new view::LabeledFrame();
+    const auto textView = new view::TextView();
+    insideLabeledFrame->setTitle("Inside");
+    textView->setText("Ni Hao");
+    labeledFrame->setTitle("Hello World");
+    labeledFrame->addChild(insideLabeledFrame);
+    insideLabeledFrame->addChild(textView);
+    screen.setRootView(labeledFrame);
 
     display.init();
     display.setBrightness(50);
@@ -43,39 +54,7 @@ void setup() {
     scheduler.addSchedule(new sche::SchedulableFromLambda([](sche::mtime_t) {
         display.clear();
         return true;
-    }), PRIORITY_HIGH); {
-        // subScheduler 不能在外面使用.
-        auto *subScheduler = new sche::Scheduler();
-        subScheduler->setRemain(true);
-        scheduler.addSchedule(subScheduler, PRIORITY_PLAIN);
-        rect.setScheduler(subScheduler);
-        rect.init();
-    }
-
-    scheduler.addSchedule(new sche::ButtonEvent(
-        BUTTON_PIN,
-        [&pressedTime, &rect](const sche::mtime_t pt) {
-            pressedTime = pt;
-            if (pressedTime > 1000) {
-                rect.update(0, 0, 10, 10);
-            } else if (pressedTime > 200) {
-                // 矩形移动到右侧
-                rect.update(-1, -1, 20, 30);
-            } else {
-                // 矩形移动到左侧
-                rect.update(100, 30, -1, -1);
-            }
-            Serial.printf("Pressed: %lu\n", pt);
-            return true;
-        }
-    ));
-    scheduler.addSchedule(new sche::SchedulableFromLambda(
-        [&pressedTime](const sche::mtime_t dt) {
-            String s = "Btn: ";
-            s.concat(pressedTime);
-            display.drawString(0, 0, s);
-            return true;
-        }));
+    }), PRIORITY_HIGH);
     scheduler.addSchedule(new sche::SchedulableFromLambda([](sche::mtime_t) {
         display.display();
         return true;

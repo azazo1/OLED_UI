@@ -41,11 +41,15 @@ namespace view {
 
         /**
          * 初始化 Rect 的伴随可安排项(绘制矩形), 普通优先级.
-         * @note 不放在构造函数是因为此方法可以用来自定义位置, 需要保证 scheduler 字段不为空.
+         * @note 需要保证 scheduler 字段不为空.
          */
         void init() const;
 
-        void setScheduler(sche::Scheduler* scheduler);
+        /**
+         * 设置 Scheduler.
+         * @param scheduler 设置此 Rect 专属的 Scheduler.
+         */
+        void setScheduler(sche::Scheduler *scheduler);
 
         /**
          * 设置新的值并伴随动画.

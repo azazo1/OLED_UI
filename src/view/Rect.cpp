@@ -20,6 +20,7 @@ namespace view {
 
     void Rect::setScheduler(sche::Scheduler *scheduler) {
         this->scheduler = scheduler;
+        scheduler->setRemain(true);
     }
 
     void Rect::init() const {
@@ -77,6 +78,7 @@ namespace view {
     }
 
     void Rect::destroy() {
+        scheduler->setRemain(false);
         alive = false;
     }
 
