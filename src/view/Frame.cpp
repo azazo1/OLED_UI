@@ -26,9 +26,6 @@ namespace view {
     }
 
     void Frame::destroy() {
-        for (const View *ch: children) {
-            delete ch;
-        }
         children.clear();
         View::destroy();
     }

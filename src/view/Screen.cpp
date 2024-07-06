@@ -4,6 +4,8 @@
 
 #include "Screen.h"
 
+#include <Button.h>
+#include <event/ButtonEvent.h>
 #include <sche/SchedulableFromLambda.h>
 
 #include "event/Event.h"
@@ -24,26 +26,44 @@ namespace view {
         this->scheduler = subScheduler;
         subScheduler->addSchedule(new sche::SchedulableFromLambda(
             [this](sche::mtime_t) {
-                if (rootView != nullptr) {
-                    rootView->onDraw(0, 0,
-                                     static_cast<int16_t>(display->getWidth()),
-                                     static_cast<int16_t>(display->getHeight()),
-                                     display, this->scheduler);
+                if (!rootViewStack.empty()) {
+                    rootViewStack.top()->onDraw(0, 0,
+                                                static_cast<int16_t>(display->getWidth()),
+                                                static_cast<int16_t>(display->getHeight()),
+                                                display, this->scheduler);
                 }
                 return alive;
             }
         ));
     }
 
-    void Screen::setRootView(View *view) {
-        delete rootView;
-        rootView = view;
+    void Screen::pushRootView(View *view) {
+        rootViewStack.push(view);
     }
 
-    void Screen::dispatchEvent(const event::Event &event) const {
-        if (rootView != nullptr) {
-            rootView->dispatchEvent(event);
+    void Screen::dispatchEvent(const event::Event &event) {
+        if (!rootViewStack.empty()) {
+            if (rootViewStack.top()->dispatchEvent(event)) {
+                return;
+            } // 如果 rootView 消耗了长按事件则不进行返回操作.
         }
+        if (event.getType() == EVENT_TYPE_BUTTON) {
+            if (static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
+                if (rootViewStack.size() > 1) {
+                    onBackward(popRootView());
+                }
+            }
+        }
+    }
+
+    size_t Screen::getStackSize() const {
+        return rootViewStack.size();
+    }
+
+    View *Screen::popRootView() {
+        View *rst = rootViewStack.top();
+        rootViewStack.pop();
+        return rst;
     }
 
     void Screen::destroy() {
@@ -52,8 +72,7 @@ namespace view {
         }
         alive = false;
         scheduler = nullptr; // scheduler 的所有权已经在 attachToScheduler 时交给了父 scheduler.
-        delete rootView;
-        rootView = nullptr;
+        // 此处不对 rootViews 进行析构.
     }
 
     Screen::~Screen() {
@@ -70,5 +89,9 @@ namespace view {
 
     SSD1306Wire &Screen::getDisplay() const {
         return *display;
+    }
+
+    void Screen::setOnBackward(std::function<void(View *)> onBackward) {
+        this->onBackward = std::move(onBackward);
     }
 } // view

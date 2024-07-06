@@ -17,7 +17,7 @@
 #define KNOB_PIN_B GPIO_NUM_35
 #define BUTTON_PIN 23
 
-#define FONT_DATA ArialMT_Plain_16
+#define FONT_DATA ArialMT_Plain_10
 
 auto display = SSD1306Wire(0x3C, SDA, SCL);
 
@@ -38,6 +38,8 @@ void setup() {
     const propmap::LinearMapping linear_mapping;
     view::Screen screen(&display);
     screen.attachToScheduler(&scheduler);
+    screen.setOnBackward([](view::View *popen) {
+    });
 
     display.init();
     display.setBrightness(50);
@@ -45,22 +47,45 @@ void setup() {
     view::View::setFont(FONT_DATA);
     display.setFont(FONT_DATA);
 
-    const auto labeledFrame = new view::LabeledFrame();
-    labeledFrame->setTitle("Hello World");
+    auto primaryLabeledFrame = view::LabeledFrame();
+    auto primaryTextSelector = view::TextSelector();
+    auto secondaryLabeledFrame = view::LabeledFrame();
+    auto secondaryTextselector = view::TextSelector();
 
-    const auto textSelector = new view::TextSelector();
-    textSelector->addItem("Hello");
-    textSelector->addItem("Ni hao a");
-    textSelector->addItem("I like apple");
-    textSelector->addItem("Thks");
-    textSelector->addItem("Debug");
-    textSelector->setOnConfirmListener([](const String &text) {
-        Serial.println("Selected: " + text);
-    });
+    primaryLabeledFrame.setTitle("Hello World");
 
-    labeledFrame->addChild(textSelector);
+    primaryTextSelector.addItem("Hello");
+    primaryTextSelector.addItem("Ni hao a");
+    primaryTextSelector.addItem("I like apple");
+    primaryTextSelector.addItem("Thks");
+    primaryTextSelector.addItem("Debug");
+    primaryTextSelector.setOnConfirmListener(
+        [&screen, &primaryTextSelector, &secondaryLabeledFrame](const size_t idx) {
+            Serial.print("Primary Selected: ");
+            Serial.print(primaryTextSelector.itemAt(idx));
+            Serial.print(", ");
+            Serial.println(idx);
+            screen.pushRootView(&secondaryLabeledFrame);
+        });
+    primaryLabeledFrame.addChild(&primaryTextSelector);
 
-    screen.setRootView(labeledFrame);
+    secondaryLabeledFrame.addChild(&secondaryTextselector);
+    secondaryLabeledFrame.setTitle("Second");
+    secondaryTextselector.addItem("Apple");
+    secondaryTextselector.addItem("Banana");
+    secondaryTextselector.addItem("Orange");
+    secondaryTextselector.addItem("Peach");
+    secondaryTextselector.addItem("Grape");
+    secondaryTextselector.setOnConfirmListener(
+        [&screen, &secondaryTextselector](const size_t idx) {
+            Serial.print("Secondary Selected: ");
+            Serial.print(secondaryTextselector.itemAt(idx));
+            Serial.print(", ");
+            Serial.println(idx);
+            screen.popRootView();
+        });
+
+    screen.pushRootView(&primaryLabeledFrame);
 
     scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.clear();

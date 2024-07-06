@@ -18,7 +18,7 @@ namespace view {
 
         /**
          * 添加子视图.
-         * @param view 视图, 堆指针, 传入所有权.
+         * @param view 视图, 无需堆指针, 不对其生命周期进行管理.
          */
         void addChild(View *view);
 
