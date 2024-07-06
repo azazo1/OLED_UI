@@ -10,7 +10,6 @@
 
 id_t seq = 0;
 
-
 namespace knob {
     std::unordered_map<id_t, std::pair<int, int> > Knob::interruptMap = {};
     std::unordered_map<id_t, int> Knob::deltaMap = {};

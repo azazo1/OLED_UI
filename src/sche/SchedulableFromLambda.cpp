@@ -10,7 +10,7 @@ namespace sche {
     SchedulableFromLambda::SchedulableFromLambda(CallbackFunc func): func(std::move(func)) {
     }
 
-    bool SchedulableFromLambda::schedule(mtime_t deltaTime) {
+    bool SchedulableFromLambda::schedule(const mtime_t deltaTime) {
         return func(deltaTime);
     }
 } // sche

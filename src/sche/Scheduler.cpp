@@ -4,13 +4,10 @@
 
 #include "Scheduler.h"
 #include <esp32-hal.h>
-
+#include <Arduino.h>
 
 namespace sche {
-    Scheduler::Scheduler() = default;
-
     void Scheduler::addSchedule(Schedulable *schedulable, const int priority) {
-        mtime_t nowTime = millis();
         switch (priority) {
             case PRIORITY_LOW:
                 scheListLow.emplace_back(schedulable, nowTime);
@@ -27,22 +24,26 @@ namespace sche {
     }
 
     void Scheduler::clear() {
+        for (const auto sc: scheListLow) {
+            delete sc.first;
+        }
+        for (const auto sc: scheListPlain) {
+            delete sc.first;
+        }
+        for (const auto sc: scheListHigh) {
+            delete sc.first;
+        }
         scheListLow.clear();
         scheListPlain.clear();
         scheListHigh.clear();
     }
 
     void Scheduler::mainloop() {
-        while (
-            !scheListLow.empty()
-            || !scheListPlain.empty()
-            || !scheListHigh.empty()
-        ) {
-            const mtime_t nowTime = millis();
-            traverseAndFilter(scheListHigh, nowTime);
-            traverseAndFilter(scheListPlain, nowTime);
-            traverseAndFilter(scheListLow, nowTime);
-        }
+        while (schedule(millis() - nowTime)); // 这里的 nowTime 是上一次执行的时间.
+    }
+
+    void Scheduler::setRemain(const bool remain) {
+        dieOnEmpty = !remain;
     }
 
     void Scheduler::traverseAndFilter(ScheList &lst, const mtime_t nowTime) {
@@ -58,5 +59,22 @@ namespace sche {
                 beginIter = lst.erase(beginIter);
             }
         }
+    }
+
+    bool Scheduler::schedule(const mtime_t deltaTime) {
+        nowTime += deltaTime;
+        traverseAndFilter(scheListHigh, nowTime);
+        traverseAndFilter(scheListPlain, nowTime);
+        traverseAndFilter(scheListLow, nowTime);
+        if (dieOnEmpty) {
+            return !scheListLow.empty()
+                   || !scheListPlain.empty()
+                   || !scheListHigh.empty();
+        }
+        return true;
+    }
+
+    Scheduler::~Scheduler() {
+        clear();
     }
 } // sche

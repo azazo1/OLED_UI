@@ -19,12 +19,18 @@ namespace sche {
         const auto schedulable = sequence.front();
         const bool rst = schedulable->schedule(deltaTime);
         if (!rst) {
+            // 结束子项生命
             delete schedulable;
             sequence.pop();
-            if (sequence.empty()) {
+            if (dieOnEmpty && sequence.empty()) {
                 return false;
             }
         }
         return true;
+    }
+
+    SequenceSchedulable *SequenceSchedulable::setRemain(const bool remain) {
+        dieOnEmpty = !remain;
+        return this;
     }
 } // sche
