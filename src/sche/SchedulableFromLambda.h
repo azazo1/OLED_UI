@@ -5,7 +5,7 @@
 #ifndef SCHEDULABLEFROMLAMBDA_H
 #define SCHEDULABLEFROMLAMBDA_H
 #include <functional>
-#include <Scheduler.h>
+#include "Schedulable.h"
 
 namespace sche {
     typedef std::function<bool(mtime_t)> CallbackFunc;

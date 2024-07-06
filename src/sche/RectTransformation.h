@@ -5,8 +5,8 @@
 #ifndef RECTTRANSFORMATION_H
 #define RECTTRANSFORMATION_H
 #include <cstdint>
-#include <Schedulable.h>
-#include <Scheduler.h>
+#include "Schedulable.h"
+#include "Scheduler.h"
 
 namespace sche {
     typedef std::function<void(int16_t, int16_t, int16_t, int16_t)> PainterType;

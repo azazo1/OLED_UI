@@ -4,7 +4,4 @@
 #include "Schedulable.h"
 
 namespace sche {
-    void Schedulable::then(Schedulable *next) {
-        this->next = next;
-    }
 }
