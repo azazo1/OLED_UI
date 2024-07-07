@@ -6,6 +6,7 @@
 #include <view/Screen.h>
 #include <event/KnobEvent.h>
 #include <view/Seekbar.h>
+#include <view/Switch.h>
 #include <view/TextSelector.h>
 
 #include "sche/Schedulable.h"
@@ -30,7 +31,6 @@ void drawString(const int16_t secy) {
     display.drawString(40, secy, "nihao shijie");
 }
 
-
 void setup() {
     Serial.begin(9600);
 
@@ -48,15 +48,16 @@ void setup() {
     view::View::setFont(FONT_DATA);
     display.setFont(FONT_DATA);
 
-    auto lf1 = view::LabeledFrame();
+    auto lf1 = view::LabeledFrame("Hello World");
     auto ts1 = view::TextSelector();
-    auto lf2 = view::LabeledFrame();
+    auto lf2 = view::LabeledFrame("Fruit");
     auto ts2 = view::TextSelector();
-    auto lf3 = view::LabeledFrame();
+    auto lf3 = view::LabeledFrame("Seekbar");
     auto sb3 = view::Seekbar();
+    auto lf32 = view::LabeledFrame("Switch");
+    auto st32 = view::Switch("Open?");
 
-    lf1.setTitle("Hello World");
-
+    // 1
     ts1.addItem("Hello");
     ts1.addItem("Ni hao a");
     ts1.addItem("I like apple");
@@ -72,23 +73,28 @@ void setup() {
         });
     lf1.addChild(&ts1);
 
+    // 2
     lf2.addChild(&ts2);
-    lf2.setTitle("Second");
     ts2.addItem("Apple");
     ts2.addItem("Banana");
     ts2.addItem("Orange");
     ts2.addItem("Peach");
     ts2.addItem("Grape");
     ts2.setOnConfirmListener(
-        [&screen, &ts2, &lf3](const size_t idx) {
+        [&screen, &ts2, &lf3, &lf32](const size_t idx) {
             Serial.print("Secondary Selected: ");
             Serial.print(ts2.itemAt(idx));
             Serial.print(", ");
             Serial.println(idx);
-            screen.pushRootView(&lf3);
-        });
+            if (idx == 0) {
+                screen.pushRootView(&lf3);
+            } else if (idx == 1) {
+                screen.pushRootView(&lf32);
+            }
+        }
+    );
 
-    lf3.setTitle("Seekbar");
+    // 3
     lf3.addChild(&sb3);
     sb3.setOnChangeListener([&lf3](const int16_t cur) {
         Serial.printf("Seekbar3,now: %d\n", cur);
@@ -101,6 +107,12 @@ void setup() {
     sb3.setMax(100);
     sb3.setMin(-100);
     sb3.setStep(5);
+
+    // 4
+    lf32.addChild(&st32);
+    st32.setOnChangeListener([](const bool switched) {
+        Serial.printf("Switch32: %d\n", switched);
+    });
 
     screen.pushRootView(&lf1);
 

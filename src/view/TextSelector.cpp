@@ -115,14 +115,14 @@ namespace view {
                 animMoveRect(static_cast<int16_t>(currentY + lineHeight * selectionDelta),
                              expectedWidth, scheduler);
                 animMoveItems(0, scheduler); // 防止原来那个被取消导致动画不完全.
-                Serial.printf("1");
+                // Serial.printf("1");
             } else {
                 const int bottomY = height - lineHeight;
                 // 不够矩形向下移动 delta 行高度, 那么就让矩形贴底.
                 animMoveRect(static_cast<int16_t>(bottomY), expectedWidth, scheduler);
                 // 然后把目标的文字也贴底.
                 animMoveItems(static_cast<int16_t>(bottomY - nextY), scheduler);
-                Serial.printf("2");
+                // Serial.printf("2");
             }
         } else if (selectionDelta < 0) {
             // 这里需要特别注意 delta 是负数.
@@ -133,16 +133,16 @@ namespace view {
                 animMoveRect(static_cast<int16_t>(currentY + lineHeight * selectionDelta),
                              expectedWidth, scheduler);
                 animMoveItems(0, scheduler); // 防止原来那个被取消导致动画不完全.
-                Serial.printf("3");
+                // Serial.printf("3");
             } else {
                 // 矩形不能向上移动 delta 行.
                 // 矩形和目标文字贴底.
                 animMoveItems(static_cast<int16_t>(-nextY), scheduler);
                 animMoveRect(0, expectedWidth, scheduler);
-                Serial.printf("4");
+                // Serial.printf("4");
             }
         }
-        Serial.printf(" %d %d %d %d\n", selectionDelta, selected, relativeY, relativeYTarget);
+        // Serial.printf(" %d %d %d %d\n", selectionDelta, selected, relativeY, relativeYTarget);
     }
 
     void TextSelector::animMoveItems(const int16_t deltaY, sche::Scheduler &scheduler) {

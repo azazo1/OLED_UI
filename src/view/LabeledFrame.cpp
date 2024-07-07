@@ -5,6 +5,9 @@
 #include "LabeledFrame.h"
 
 namespace view {
+    LabeledFrame::LabeledFrame(String title): Frame(), title(std::move(title)) {
+    }
+
     void LabeledFrame::setTitle(String title) {
         this->title = std::move(title);
     }

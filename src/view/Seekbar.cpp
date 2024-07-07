@@ -72,7 +72,7 @@ namespace view {
         const auto y = static_cast<int16_t>(borderY + 0.5 * borderH - 0.5 * BAR_THICK);
         display->fillRect(borderX, y, x, BAR_THICK);
         // 右半边空心进度.
-        display->fillRect(x, y, static_cast<int16_t>(borderX + borderW - x), BAR_THICK);
+        display->drawRect(x, y, static_cast<int16_t>(borderX + borderW - x), BAR_THICK);
     }
 
     void Seekbar::setCentering(const bool center) {

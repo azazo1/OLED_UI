@@ -12,6 +12,10 @@ namespace view {
         static constexpr int16_t PADDING = 3;
 
     public:
+        LabeledFrame(String title);
+
+        LabeledFrame() = default;
+
         void setTitle(String title);
 
         void onDraw(int16_t borderX, int16_t borderY, int16_t borderW, int16_t borderH,
