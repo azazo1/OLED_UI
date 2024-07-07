@@ -5,6 +5,7 @@
 #include <view/LabeledFrame.h>
 #include <view/Screen.h>
 #include <event/KnobEvent.h>
+#include <view/Seekbar.h>
 #include <view/TextSelector.h>
 
 #include "sche/Schedulable.h"
@@ -47,45 +48,61 @@ void setup() {
     view::View::setFont(FONT_DATA);
     display.setFont(FONT_DATA);
 
-    auto primaryLabeledFrame = view::LabeledFrame();
-    auto primaryTextSelector = view::TextSelector();
-    auto secondaryLabeledFrame = view::LabeledFrame();
-    auto secondaryTextselector = view::TextSelector();
+    auto lf1 = view::LabeledFrame();
+    auto ts1 = view::TextSelector();
+    auto lf2 = view::LabeledFrame();
+    auto ts2 = view::TextSelector();
+    auto lf3 = view::LabeledFrame();
+    auto sb3 = view::Seekbar();
 
-    primaryLabeledFrame.setTitle("Hello World");
+    lf1.setTitle("Hello World");
 
-    primaryTextSelector.addItem("Hello");
-    primaryTextSelector.addItem("Ni hao a");
-    primaryTextSelector.addItem("I like apple");
-    primaryTextSelector.addItem("Thks");
-    primaryTextSelector.addItem("Debug");
-    primaryTextSelector.setOnConfirmListener(
-        [&screen, &primaryTextSelector, &secondaryLabeledFrame](const size_t idx) {
+    ts1.addItem("Hello");
+    ts1.addItem("Ni hao a");
+    ts1.addItem("I like apple");
+    ts1.addItem("Thks");
+    ts1.addItem("Debug");
+    ts1.setOnConfirmListener(
+        [&screen, &ts1, &lf2](const size_t idx) {
             Serial.print("Primary Selected: ");
-            Serial.print(primaryTextSelector.itemAt(idx));
+            Serial.print(ts1.itemAt(idx));
             Serial.print(", ");
             Serial.println(idx);
-            screen.pushRootView(&secondaryLabeledFrame);
+            screen.pushRootView(&lf2);
         });
-    primaryLabeledFrame.addChild(&primaryTextSelector);
+    lf1.addChild(&ts1);
 
-    secondaryLabeledFrame.addChild(&secondaryTextselector);
-    secondaryLabeledFrame.setTitle("Second");
-    secondaryTextselector.addItem("Apple");
-    secondaryTextselector.addItem("Banana");
-    secondaryTextselector.addItem("Orange");
-    secondaryTextselector.addItem("Peach");
-    secondaryTextselector.addItem("Grape");
-    secondaryTextselector.setOnConfirmListener(
-        [&screen, &secondaryTextselector](const size_t idx) {
+    lf2.addChild(&ts2);
+    lf2.setTitle("Second");
+    ts2.addItem("Apple");
+    ts2.addItem("Banana");
+    ts2.addItem("Orange");
+    ts2.addItem("Peach");
+    ts2.addItem("Grape");
+    ts2.setOnConfirmListener(
+        [&screen, &ts2, &lf3](const size_t idx) {
             Serial.print("Secondary Selected: ");
-            Serial.print(secondaryTextselector.itemAt(idx));
+            Serial.print(ts2.itemAt(idx));
             Serial.print(", ");
             Serial.println(idx);
-            screen.popRootView();
+            screen.pushRootView(&lf3);
         });
 
-    screen.pushRootView(&primaryLabeledFrame);
+    lf3.setTitle("Seekbar");
+    lf3.addChild(&sb3);
+    sb3.setOnChangeListener([&lf3](const int16_t cur) {
+        Serial.printf("Seekbar3,now: %d\n", cur);
+        lf3.setTitle(String("Seekbar: ") + cur);
+    });
+    sb3.setOnConfirmListener([&screen](const int16_t cur) {
+        Serial.printf("Seekbar3: %d\n", cur);
+        screen.popRootView();
+    });
+    sb3.setMax(100);
+    sb3.setMin(-100);
+    sb3.setStep(5);
+
+    screen.pushRootView(&lf1);
 
     scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
         display.clear();
