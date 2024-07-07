@@ -20,6 +20,8 @@ namespace view {
         };
         std::function<void(int16_t)> onConfirmListener = [](int16_t) {
         };
+        std::function<void(int16_t)> onCancelListener = [](int16_t) {
+        };
         bool centering = true;
 
     public:
@@ -54,6 +56,11 @@ namespace view {
          */
         void setStep(int16_t step);
 
+        /**
+         * 设置当前的 current 进度, 不会触发任何 listener.
+         */
+        void setCurrent(int16_t cur);
+
         void onDraw(int16_t borderX, int16_t borderY, int16_t borderW, int16_t borderH,
                     SSD1306Wire *display, sche::Scheduler *scheduler) override;
 
@@ -61,6 +68,11 @@ namespace view {
 
         void setOnConfirmListener(std::function<void(int16_t)> listener);
 
+        void setOnCancelListener(std::function<void(int16_t)> listener);
+
+        /**
+         * 消耗旋钮的旋转事件和按钮的短按长按.
+         */
         bool dispatchEvent(const event::Event &event) override;
     };
 } // view

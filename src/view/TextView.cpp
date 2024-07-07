@@ -11,6 +11,9 @@
 #include "Screen.h"
 
 namespace view {
+    TextView::TextView(String text): text(std::move(text)) {
+    }
+
     void TextView::setText(String text) {
         this->text = std::move(text);
     }
@@ -33,7 +36,7 @@ namespace view {
         }
         if (event.getType() == EVENT_TYPE_BUTTON) {
             // 只在短按时有效.
-            if (!static_cast<const event::ButtonEvent*>(&event)->isLongClick()) {
+            if (!static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
                 // 字符逐渐出现动画.
                 auto curBatch = ++aniBatch;
                 event.getScreen().getScheduler().addSchedule(

@@ -13,6 +13,10 @@ namespace view {
         size_t aniBatch = 0;
 
     public:
+        explicit TextView(String text);
+
+        TextView() = default;
+
         void setText(String text);
 
         void onDraw(int16_t borderX, int16_t borderY, int16_t borderW, int16_t borderH,

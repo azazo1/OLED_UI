@@ -3,11 +3,8 @@
 //
 
 #include "Screen.h"
-
-#include <Button.h>
 #include <event/ButtonEvent.h>
 #include <sche/SchedulableFromLambda.h>
-
 #include "event/Event.h"
 
 namespace view {

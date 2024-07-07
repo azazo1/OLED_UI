@@ -13,7 +13,7 @@ namespace sche {
     }
 
     bool SequenceSchedulable::schedule(const mtime_t deltaTime) {
-        if (sequence.empty()) {
+        if (dieOnEmpty && sequence.empty()) {
             return false;
         }
         const auto schedulable = sequence.front();
@@ -32,5 +32,12 @@ namespace sche {
     SequenceSchedulable *SequenceSchedulable::setRemain(const bool remain) {
         dieOnEmpty = !remain;
         return this;
+    }
+
+    SequenceSchedulable::~SequenceSchedulable() {
+        while (!sequence.empty()) {
+            delete sequence.front();
+            sequence.pop();
+        }
     }
 } // sche

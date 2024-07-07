@@ -19,17 +19,9 @@
 #define KNOB_PIN_B GPIO_NUM_35
 #define BUTTON_PIN 23
 
-#define FONT_DATA ArialMT_Plain_10
+#define FONT_DATA ArialMT_Plain_16
 
 auto display = SSD1306Wire(0x3C, SDA, SCL);
-
-int rectWidth = 128;
-int rectHeight = 16;
-
-void drawString(const int16_t secy) {
-    display.drawString(40, 0, "hello world");
-    display.drawString(40, secy, "nihao shijie");
-}
 
 void setup() {
     Serial.begin(9600);

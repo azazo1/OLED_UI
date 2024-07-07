@@ -62,7 +62,7 @@ namespace view {
     bool Switch::dispatchEvent(const event::Event &event) {
         if (event.getType() == EVENT_TYPE_BUTTON) {
             if (!static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
-                setState(!state);
+                state = !state;
                 onChangeListener(state);
                 animState(event.getScreen().getScheduler());
                 return true;
@@ -77,26 +77,39 @@ namespace view {
 
     void Switch::setState(const bool newState) {
         state = newState;
+        resetAppearance();
     }
 
     void Switch::animState(sche::Scheduler &scheduler) {
+        auto curBatch = animBatch;
         int16_t newPos = PADDING;
         if (state) {
             newPos = static_cast<int16_t>(SWITCH_OUTBOX_WIDTH - PADDING - SWITCH_INBOX_WIDTH);
         }
         scheduler.addSchedule(new sche::ScalaTransition(
             relInX, newPos, ANIM_DURATION, nullptr,
-            [this](const int16_t cur) {
+            [this, curBatch](const int16_t cur) {
                 relInX = cur;
-                return true;
+                return curBatch == animBatch;
             }
         ));
         scheduler.addSchedule(new sche::ScalaTransition(
             solidRatio, state ? 100 : 0, ANIM_DURATION, nullptr,
-            [this](const int16_t cur) {
+            [this, curBatch](const int16_t cur) {
                 solidRatio = cur;
-                return true;
+                return curBatch == animBatch;
             }
         ));
+    }
+
+    void Switch::resetAppearance() {
+        animBatch++;
+        if (state) {
+            relInX = static_cast<int16_t>(SWITCH_OUTBOX_WIDTH - PADDING - SWITCH_INBOX_WIDTH);
+            solidRatio = 100;
+        } else {
+            relInX = PADDING;
+            solidRatio = 0;
+        }
     }
 } // view

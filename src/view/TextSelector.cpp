@@ -12,6 +12,10 @@
 #include "Screen.h"
 
 namespace view {
+    void TextSelector::setLooping(const bool loop) {
+        this->loop = loop;
+    }
+
     void TextSelector::addItem(String item) {
         items.push_back(std::move(item));
     }
@@ -68,7 +72,18 @@ namespace view {
             return false;
         }
         if (event.getType() == EVENT_TYPE_KNOB) {
+            if (items.empty()) {
+                // 没东西就直接消耗.
+                return true;
+            }
             int delta = event.getPrimaryValue();
+            if (!loop && (
+                    (selected == 0 && delta < 0)
+                    || (selected == items.size() - 1 && delta > 0)
+                )) {
+                // 非 loop, 到头/尾了.
+                return true; // 虽然没改变什么, 但是仍然消耗事件.
+            }
             const size_t size = items.size();
             while (delta < 0) {
                 delta += static_cast<int>(size);

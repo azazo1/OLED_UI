@@ -40,6 +40,8 @@ namespace sche {
          *       此时 SequenceSchedulable 对象的生命周期为无限长, 可放心在外面持有此对象(指针).
          */
         SequenceSchedulable *setRemain(bool remain);
+
+        ~SequenceSchedulable() override;
     };
 } // sche
 

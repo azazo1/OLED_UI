@@ -32,14 +32,19 @@ namespace view {
          * 实现的思路是使用随机数决定是否绘制像素, 同时在每次 onDraw 时重置随机种子.
          */
         int16_t solidRatio = 0;
-
         /// 由于开关按钮消耗了短按事件, 故没有 onConfirmListener.
         std::function<void(bool)> onChangeListener = [](bool) {
         };
+        // 开关没有 onCancelListener, 因为想要结束编辑只能长按.
 
         String text;
-
         bool centering = true;
+        size_t animBatch = 0;
+
+        /**
+         * 将 InBox 的位置立即调整到 state 对应的位置.
+         */
+        void resetAppearance();
 
     public:
         Switch(String text);
@@ -60,7 +65,7 @@ namespace view {
         void setOnChangeListener(std::function<void(bool)> listener);
 
         /**
-         * 设置开关状态, 但是不会触发动画.
+         * 设置开关状态, 但是不会触发动画和 listener, 会调用 resetAppearance, 并禁用以前所有在此 View 上的动画.
          */
         void setState(bool newState);
 

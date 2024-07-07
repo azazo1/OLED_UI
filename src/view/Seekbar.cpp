@@ -30,6 +30,10 @@ namespace view {
         this->onConfirmListener = std::move(listener);
     }
 
+    void Seekbar::setOnCancelListener(std::function<void(int16_t)> listener) {
+        this->onCancelListener = std::move(listener);
+    }
+
     bool Seekbar::dispatchEvent(const event::Event &event) {
         if (event.getType() == EVENT_TYPE_KNOB) {
             current = static_cast<int16_t>(current + event.getPrimaryValue() * step);
@@ -46,8 +50,10 @@ namespace view {
             if (!static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
                 // 不是长按.
                 onConfirmListener(current);
-                return true;
+            } else {
+                onCancelListener(current);
             }
+            return true;
         }
         return false;
     }
@@ -77,5 +83,9 @@ namespace view {
 
     void Seekbar::setCentering(const bool center) {
         centering = center;
+    }
+
+    void Seekbar::setCurrent(const int16_t cur) {
+        current = cur;
     }
 } // view

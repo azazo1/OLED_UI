@@ -18,6 +18,8 @@ namespace view {
         /// relativeY 中的值的趋向(relativeY 在动画结束后就和 relativeYTarget 相等).
         int16_t relativeYTarget = 0;
         size_t selected = 0;
+        /// 是否在在末尾向后选时回到开头(反过来同理).
+        bool loop = true;
 
         // 文字高亮矩形.
         // h 参数是固定的 lineHeight.
@@ -63,6 +65,11 @@ namespace view {
          * 添加可选项.
          */
         void addItem(String item);
+
+        /**
+         * @see TextSelector::loop
+         */
+        void setLooping(bool loop);
 
         /**
          * 清空可选项.
