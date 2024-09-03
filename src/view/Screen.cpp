@@ -50,7 +50,7 @@ namespace view {
         }
         if (event.getType() == EVENT_TYPE_BUTTON) {
             if (static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
-                if (rootViewStack.size() > 1) {
+                if (rootViewStack.size() > 1) { // 防止过分退出.
                     onBackward(popRootView());
                 }
             }
