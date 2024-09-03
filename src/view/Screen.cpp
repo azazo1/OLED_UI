@@ -32,6 +32,10 @@ namespace view {
                 return alive;
             }
         ));
+        scheduler->addSchedule(new sche::SchedulableFromLambda([this](sche::mtime_t) {
+            display->clear();
+            return isAlive();
+        }), PRIORITY_HIGH);
         this->scheduler->addSchedule(new sche::SchedulableFromLambda([this](sche::mtime_t) {
             display->display();
             return isAlive();
@@ -50,7 +54,8 @@ namespace view {
         }
         if (event.getType() == EVENT_TYPE_BUTTON) {
             if (static_cast<const event::ButtonEvent *>(&event)->isLongClick()) {
-                if (rootViewStack.size() > 1) { // 防止过分退出.
+                if (rootViewStack.size() > 1) {
+                    // 防止过分退出.
                     onBackward(popRootView());
                 }
             }

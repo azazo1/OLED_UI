@@ -5,12 +5,12 @@
 #include <view/LabeledFrame.h>
 #include <view/Screen.h>
 #include <event/KnobEvent.h>
+#include <sche/SchedulableKnobEvent.h>
 #include <view/Seekbar.h>
 #include <view/Switch.h>
 #include <view/TextSelector.h>
 
 #include "sche/Schedulable.h"
-#include "sche/SchedulableFromLambda.h"
 #include "sche/Scheduler.h"
 #include "SSD1306Wire.h"
 #include "Knob.h"
@@ -112,19 +112,12 @@ void setup() {
 
     screen.pushRootView(&lf1);
 
-    scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
-        display.clear();
-        return screen.isAlive();
-    }), PRIORITY_HIGH);
-    scheduler.addSchedule(new sche::SchedulableFromLambda(
-        [&screen, &kb](sche::mtime_t) {
-            const auto delta = kb.delta();
-            if (delta != 0) {
-                screen.dispatchEvent(event::KnobEvent(screen, delta));
-            }
+    scheduler.addSchedule(new sche::SchedulableKnobEvent(
+        KNOB_PIN_A, KNOB_PIN_B,
+        [&screen](const int delta) {
+            screen.dispatchEvent(event::KnobEvent(screen, delta));
             return screen.isAlive();
-        }
-    ));
+        }));
     scheduler.addSchedule(new sche::SchedulableButtonEvent(
         BUTTON_PIN, [&screen](const sche::mtime_t pt) {
             screen.dispatchEvent(event::ButtonEvent(screen, static_cast<int>(pt)));
