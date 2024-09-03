@@ -96,6 +96,10 @@ void setup() {
         Serial.printf("Seekbar3: %d\n", cur);
         screen.popRootView();
     });
+    sb3.setOnCancelListener([&screen](const int16_t cur) {
+        Serial.printf("Seekbar3 canceled: %d\n", cur);
+        screen.popRootView();
+    });
     sb3.setMax(100);
     sb3.setMin(-100);
     sb3.setStep(5);
@@ -126,11 +130,6 @@ void setup() {
             screen.dispatchEvent(event::ButtonEvent(screen, static_cast<int>(pt)));
             return screen.isAlive();
         }));
-    scheduler.addSchedule(new sche::SchedulableFromLambda([&screen](sche::mtime_t) {
-        display.display();
-        return screen.isAlive();
-    }), PRIORITY_LOW);
-
     scheduler.mainloop();
 }
 

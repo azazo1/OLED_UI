@@ -32,6 +32,10 @@ namespace view {
                 return alive;
             }
         ));
+        this->scheduler->addSchedule(new sche::SchedulableFromLambda([this](sche::mtime_t) {
+            display->display();
+            return isAlive();
+        }), PRIORITY_LOW);
     }
 
     void Screen::pushRootView(View *view) {
