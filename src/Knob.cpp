@@ -22,17 +22,17 @@ namespace knob {
             const auto pins = p.second;
             const int pinAr = digitalRead(pins.first);
             const int pinBr = digitalRead(pins.second);
-            if (!pinAr && pinBr) {
+            if (!pinBr && pinAr) {
                 if (lastState.at(id) == 0) {
                     deltaMap.at(id) += 1;
                     lastState.at(id) = 1;
                 }
-            } else if (!pinBr && pinAr) {
+            } else if (!pinAr && pinBr) {
                 if (lastState.at(id) == 0) {
                     deltaMap.at(id) -= 1;
                     lastState.at(id) = -1;
                 }
-            } else if (pinBr && pinAr) {
+            } else if (pinAr && pinBr) {
                 lastState.at(id) = 0;
             }
         }
