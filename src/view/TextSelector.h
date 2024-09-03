@@ -19,7 +19,8 @@ namespace view {
         int16_t relativeYTarget = 0;
         size_t selected = 0;
         /// 是否在在末尾向后选时回到开头(反过来同理).
-        bool loop = true;
+        // bool loop = true;
+        bool loop = false;
 
         // 文字高亮矩形.
         // h 参数是固定的 lineHeight.
