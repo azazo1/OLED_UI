@@ -55,6 +55,7 @@ namespace view {
 
         /**
          * 向 Root View 传递事件.
+         * 因为事件不需要存储, 故直接传入引用即可, 不需要显式地取指针.
          * @param event 要传递的事件.
          */
         void dispatchEvent(const event::Event &event);
