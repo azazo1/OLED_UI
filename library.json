@@ -1,0 +1,20 @@
+{
+  "name": "OLED UI on esp32-wroom-32",
+  "version": "1.0.0",
+  "keywords": "ssd1306, oled, display, i2c, ui",
+  "description": "Some simple UI views in esp32",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azazo1/OLED_UI"
+  },
+  "authors": [
+    {
+      "name": "azazo1",
+      "email": "azazo1@qq.com"
+    }
+  ],
+  "frameworks": "arduino",
+  "platforms": [
+    "espressif32"
+  ]
+}
