@@ -16,5 +16,8 @@
   "frameworks": "arduino",
   "platforms": [
     "espressif32"
-  ]
+  ],
+  "dependencies": {
+    "ESP8266 and ESP32 OLED driver for SSD1306 displays": "https://github.com/ThingPulse/esp8266-oled-ssd1306"
+  }
 }
