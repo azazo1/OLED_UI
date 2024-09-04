@@ -169,8 +169,8 @@ namespace view {
             newY,
             ANIM_DURATION,
             nullptr,
-            [this, curBatch](const int16_t cur) {
-                relativeY = cur;
+            [this, curBatch](const double cur) {
+                relativeY = static_cast<int16_t>(cur);
                 return curBatch == animBatch;
             }
         ));
@@ -181,15 +181,15 @@ namespace view {
         auto curBatch = animBatch;
         scheduler.addSchedule(new sche::ScalaTransition(
             relRectY, targetY, ANIM_DURATION, nullptr,
-            [this, curBatch](const int16_t cur) {
-                relRectY = cur;
+            [this, curBatch](const double cur) {
+                relRectY = static_cast<int16_t>(cur);
                 return curBatch == animBatch;
             }
         ));
         scheduler.addSchedule(new sche::ScalaTransition(
             rectWidth, targetWidth, ANIM_DURATION, nullptr,
-            [this, curBatch](const int16_t cur) {
-                rectWidth = cur;
+            [this, curBatch](const double cur) {
+                rectWidth = static_cast<int16_t>(cur);
                 return curBatch == animBatch;
             }
         ));

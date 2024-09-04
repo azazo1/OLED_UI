@@ -7,10 +7,10 @@
 #include <utility>
 
 namespace sche {
-    ScalaTransition::ScalaTransition(const int16_t start, const int16_t end,
+    ScalaTransition::ScalaTransition(const double start, const double end,
                                      const mtime_t durationMillis,
                                      const propmap::PropotionMapping *mapping,
-                                     std::function<bool(int16_t)> reporter)
+                                     std::function<bool(double)> reporter)
         : start(start), end(end), duration(durationMillis), mapping(mapping),
           reporter(std::move(reporter)) {
     }
@@ -30,7 +30,7 @@ namespace sche {
         if (mapping != nullptr) {
             passedRatio = mapping->mapping(passedRatio);
         }
-        const auto arg = static_cast<int16_t>(start + (end - start) * passedRatio);
+        const auto arg = start + (end - start) * passedRatio;
         if (arg == end) {
             ended = true;
         }

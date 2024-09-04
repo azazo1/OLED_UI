@@ -12,13 +12,13 @@
 
 namespace sche {
     class ScalaTransition final : public Schedulable {
-        const int16_t start;
-        const int16_t end;
+        const double start;
+        const double end;
         const mtime_t duration;
         const propmap::PropotionMapping *const mapping;
         mtime_t passedTime = 0;
         /// 回调函数, 接收变化值当前的值, 返回是否需要继续变化.
-        const std::function<bool(int16_t)> reporter;
+        const std::function<bool(double)> reporter;
 
         bool ended = false;
 
@@ -33,9 +33,9 @@ namespace sche {
          *
          * @note mapping 参数不必是堆指针, 不会对其生命周期进行管理, 也可以为 null, 此时为线性映射.
          */
-        ScalaTransition(int16_t start, int16_t end, mtime_t durationMillis,
+        ScalaTransition(double start, double end, mtime_t durationMillis,
                         const propmap::PropotionMapping *mapping,
-                        std::function<bool(int16_t)> reporter);
+                        std::function<bool(double)> reporter);
 
         bool schedule(unsigned long deltaTime) override;
     };

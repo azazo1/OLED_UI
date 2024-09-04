@@ -31,7 +31,7 @@ namespace view {
          *
          * 实现的思路是使用随机数决定是否绘制像素, 同时在每次 onDraw 时重置随机种子.
          */
-        int16_t solidRatio = 0;
+        double solidRatio = 0;
         /// 由于开关按钮消耗了短按事件, 故没有 onConfirmListener.
         std::function<void(bool)> onChangeListener = [](bool) {
         };

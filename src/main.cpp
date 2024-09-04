@@ -15,9 +15,9 @@
 #include "SSD1306Wire.h"
 #include "Knob.h"
 
-#define KNOB_PIN_A GPIO_NUM_32
-#define KNOB_PIN_B GPIO_NUM_35
-#define BUTTON_PIN 23
+#define KNOB_PIN_A 15
+#define KNOB_PIN_B 4
+#define BUTTON_PIN 16
 
 #define FONT_DATA ArialMT_Plain_16
 

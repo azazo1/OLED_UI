@@ -88,14 +88,14 @@ namespace view {
         }
         scheduler.addSchedule(new sche::ScalaTransition(
             relInX, newPos, ANIM_DURATION, nullptr,
-            [this, curBatch](const int16_t cur) {
-                relInX = cur;
+            [this, curBatch](const double cur) {
+                relInX = static_cast<int16_t>(cur);
                 return curBatch == animBatch;
             }
         ));
         scheduler.addSchedule(new sche::ScalaTransition(
             solidRatio, state ? 100 : 0, ANIM_DURATION, nullptr,
-            [this, curBatch](const int16_t cur) {
+            [this, curBatch](const double cur) {
                 solidRatio = cur;
                 return curBatch == animBatch;
             }

@@ -37,8 +37,8 @@ namespace view {
             if (newX >= 0) {
                 scheduler->addSchedule(new sche::ScalaTransition(
                     curX, newX, transitionTime, mapping,
-                    [curBatch, this](const int16_t val) {
-                        curX = val;
+                    [curBatch, this](const double val) {
+                        curX = static_cast<int16_t>(val);
                         return alive && curBatch == transitionBatch;
                         // 每次 update 都会更新 transitionBatch, 使之前的可安排项自动无效.
                     }
@@ -47,8 +47,8 @@ namespace view {
             if (newY >= 0) {
                 scheduler->addSchedule(new sche::ScalaTransition(
                     curY, newY, transitionTime, mapping,
-                    [curBatch, this](const int16_t val) {
-                        curY = val;
+                    [curBatch, this](const double val) {
+                        curY = static_cast<int16_t>(val);
                         return alive && curBatch == transitionBatch;
                         // 每次 update 都会更新 transitionBatch, 使之前的可安排项自动无效.
                     }
@@ -57,8 +57,8 @@ namespace view {
             if (newW >= 0) {
                 scheduler->addSchedule(new sche::ScalaTransition(
                     curW, newW, transitionTime, mapping,
-                    [curBatch, this](const int16_t val) {
-                        curW = val;
+                    [curBatch, this](const double val) {
+                        curW = static_cast<int16_t>(val);
                         return alive && curBatch == transitionBatch;
                         // 每次 update 都会更新 transitionBatch, 使之前的可安排项自动无效.
                     }
@@ -67,8 +67,8 @@ namespace view {
             if (newH >= 0) {
                 scheduler->addSchedule(new sche::ScalaTransition(
                     curH, newH, transitionTime, mapping,
-                    [curBatch, this](const int16_t val) {
-                        curH = val;
+                    [curBatch, this](const double val) {
+                        curH = static_cast<int16_t>(val);
                         return alive && curBatch == transitionBatch;
                         // 每次 update 都会更新 transitionBatch, 使之前的可安排项自动无效.
                     }

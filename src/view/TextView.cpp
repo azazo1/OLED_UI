@@ -42,9 +42,9 @@ namespace view {
                 event.getScreen().getScheduler().addSchedule(
                     (new sche::SequenceSchedulable())->then(
                         new sche::ScalaTransition(
-                            0, static_cast<int16_t>(this->text.length()), 500, nullptr,
-                            [curBatch,this](const int16_t current) {
-                                displayLength = current;
+                            0, this->text.length(), 500, nullptr,
+                            [curBatch,this](const double current) {
+                                displayLength = static_cast<int16_t>(current);
                                 return curBatch == aniBatch;
                             }
                         )
