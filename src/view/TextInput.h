@@ -36,9 +36,6 @@ namespace view {
         static constexpr sche::mtime_t ANIM_DURATION = 100;
         // 用于记录一个选项的占位宽度, 只更新一次.
         int16_t itemWidth = 0;
-        // 用于记录 onDraw 时传入的宽度高度.
-        int16_t width = 0;
-        int16_t height = 0;
         // 用于记录选项显示框的位置.
         int16_t innerBoxX = 0;
         int16_t innerBoxY = 0;
@@ -59,7 +56,6 @@ namespace view {
         int16_t rectX_ = 0;
         int16_t rectY_ = 0;
         int16_t rectWidth_ = 0;
-        int16_t rectHeight = lineHeight;
 
         /// 当前输入的文本.
         String text = String("");

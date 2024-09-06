@@ -20,8 +20,6 @@ namespace view {
         if (!alive) {
             return;
         }
-        width = borderW;
-        height = borderH;
         if (!registeredCursorLoop) {
             scheduler->addSchedule(new sche::DelaySchedulable(
                 0, cursorFlickeringInterval, new sche::SchedulableFromLambda([this](sche::mtime_t) {
@@ -31,7 +29,15 @@ namespace view {
             registeredCursorLoop = true;
         }
         display->drawRect(borderX, borderY, borderW, borderH);
-        display->drawString(static_cast<int16_t>(borderX + PADDING), borderY, text);
+        // 如果 text 过长, 只显示最后的一部分.
+        const char *displayText = text.c_str();
+        unsigned int displayTextLength = text.length();
+        while (display->getStringWidth(displayText, displayTextLength) >
+               borderW - 2 * PADDING) {
+            displayText++;
+            displayTextLength--;
+        }
+        display->drawString(static_cast<int16_t>(borderX + PADDING), borderY, displayText);
         display->drawHorizontalLine(borderX, static_cast<int16_t>(borderY + lineHeight), borderW);
         if (showCursor_) {
             const auto x = static_cast<int16_t>(display->getStringWidth(text) + PADDING);
@@ -81,7 +87,7 @@ namespace view {
             // 说明是第一次调用.
             performSelectionChange(0, *display, *scheduler);
         }
-        display->drawRect(rectX_, rectY_, rectWidth_, rectHeight);
+        display->drawRect(rectX_, rectY_, rectWidth_, lineHeight);
     }
 
     String TextInput::getText() const {
