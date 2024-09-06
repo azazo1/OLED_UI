@@ -77,7 +77,7 @@ namespace view {
          */
         void clearItems();
 
-        const String &itemAt(size_t idx) const;
+        String &itemAt(size_t idx);
 
         // 请确保在 TextSelector 显示之前配置完 items, 否则可能遇到运行时错误.
 

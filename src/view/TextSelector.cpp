@@ -24,7 +24,7 @@ namespace view {
         items.clear();
     }
 
-    const String &TextSelector::itemAt(const size_t idx) const {
+    String &TextSelector::itemAt(const size_t idx) {
         return items.at(idx);
     }
 
