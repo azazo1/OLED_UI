@@ -24,10 +24,9 @@ namespace view {
         items.clear();
     }
 
-    String &TextSelector::itemAt(const size_t idx) {
+    const String &TextSelector::itemAt(const size_t idx) const {
         return items.at(idx);
     }
-
 
     void TextSelector::onDraw(const int16_t borderX, const int16_t borderY, const int16_t borderW,
                               const int16_t borderH,
@@ -113,7 +112,8 @@ namespace view {
 
     void TextSelector::animSelectionChange(const int selectionDelta, SSD1306Wire &display,
                                            sche::Scheduler &scheduler) {
-        auto curBatch = animBatch;
+        // selectionDelta 可以为 0, 此时用来更新矩形的大小.
+
         // currentY 是现在矩形的位置(之前的动画结束后, 上部).
         const int currentY = relativeYTarget + static_cast<int16_t>(selected - selectionDelta) *
                              lineHeight;
@@ -138,7 +138,7 @@ namespace view {
                 animMoveItems(static_cast<int16_t>(bottomY - nextY), scheduler);
                 // Serial.printf("2");
             }
-        } else if (selectionDelta < 0) {
+        } else {
             // 这里需要特别注意 delta 是负数.
             // 向上滚动, 文字可能向下移动, 矩形可能向上移动.
             // currentY 一定是非负数.
@@ -196,5 +196,11 @@ namespace view {
 
     const String &TextSelector::current() const {
         return items.at(selected);
+    }
+
+    void TextSelector::setItemAt(const size_t idx, String newValue, SSD1306Wire &display,
+                                 sche::Scheduler &scheduler) {
+        items[idx] = std::move(newValue);
+        animSelectionChange(0, display, scheduler);
     }
 } // view

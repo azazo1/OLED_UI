@@ -77,7 +77,11 @@ namespace view {
          */
         void clearItems();
 
-        String &itemAt(size_t idx);
+        const String &itemAt(size_t idx) const;
+
+        /// 修改制定索引的文本, 会触发动画.
+        void setItemAt(size_t idx, String newValue, SSD1306Wire &display,
+                       sche::Scheduler &scheduler);
 
         // 请确保在 TextSelector 显示之前配置完 items, 否则可能遇到运行时错误.
 
