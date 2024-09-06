@@ -8,6 +8,7 @@
 #include <sche/SchedulableKnobEvent.h>
 #include <view/Seekbar.h>
 #include <view/Switch.h>
+#include <view/TextInput.h>
 #include <view/TextSelector.h>
 
 #include "sche/Schedulable.h"
@@ -48,6 +49,7 @@ void setup() {
     auto sb3 = view::Seekbar();
     auto lf32 = view::LabeledFrame("Switch");
     auto st32 = view::Switch("Open?");
+    auto input = view::TextInput();
 
     // 1
     ts1.addItem("Hello");
@@ -56,12 +58,16 @@ void setup() {
     ts1.addItem("Thks");
     ts1.addItem("Debug");
     ts1.setOnConfirmListener(
-        [&screen, &ts1, &lf2](const size_t idx) {
+        [&screen, &ts1, &lf2, &input](const size_t idx) {
             Serial.print("Primary Selected: ");
             Serial.print(ts1.itemAt(idx));
             Serial.print(", ");
             Serial.println(idx);
-            screen.pushRootView(&lf2);
+            if (idx == 0) {
+                screen.pushRootView(&input);
+            } else {
+                screen.pushRootView(&lf2);
+            }
         });
     lf1.addChild(&ts1);
 
@@ -108,6 +114,11 @@ void setup() {
     lf32.addChild(&st32);
     st32.setOnChangeListener([](const bool switched) {
         Serial.printf("Switch32: %d\n", switched);
+    });
+
+    // 5
+    input.setOnDoneListener([](const String &str) {
+        Serial.println(str);
     });
 
     screen.pushRootView(&lf1);

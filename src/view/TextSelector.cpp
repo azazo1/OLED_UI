@@ -127,8 +127,7 @@ namespace view {
             if (height - currentY > (1 + selectionDelta) * lineHeight) {
                 // 矩形底部还有可以放置 delta 个矩形的空间,
                 // 直接变换矩形而不改变文字位置.
-                animMoveRect(static_cast<int16_t>(currentY + lineHeight * selectionDelta),
-                             expectedWidth, scheduler);
+                animMoveRect(static_cast<int16_t>(nextY), expectedWidth, scheduler);
                 animMoveItems(0, scheduler); // 防止原来那个被取消导致动画不完全.
                 // Serial.printf("1");
             } else {
