@@ -15,6 +15,7 @@
 - TextSelector: 文本选择器.
 - Seekbar: 拖动条.
 - TextView: 文本.
+- TextInput: 文本输入框.
 
 实现了以下事件:
 
